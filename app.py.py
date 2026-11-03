@@ -43,16 +43,162 @@ st.set_page_config(page_title=SCHOOL_NAME, page_icon="🏫", layout="wide")
 st.markdown(
     """
     <style>
-    .school-banner {
-        background: linear-gradient(90deg, #0b5d3b, #138a5a);
-        color: white; padding: 18px 24px; border-radius: 12px; margin-bottom: 18px;
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    :root {
+        --g1: #0b5d3b; --g2: #138a5a; --g3: #e8f5ee; --gold: #f2b134;
+        --card-bg: rgba(127,127,127,.07); --card-border: rgba(127,127,127,.22);
     }
-    .school-banner h2 { margin: 0; color: white; }
-    .school-banner p { margin: 4px 0 0 0; opacity: .9; }
+    html, body, [class*="css"], .stMarkdown, button, input, textarea {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    /* hide default Streamlit chrome */
+    #MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
+    .block-container { padding-top: 1.2rem; padding-bottom: 3rem; max-width: 1250px; }
+
+    /* ---------- top banner ---------- */
+    .school-banner {
+        background: linear-gradient(120deg, var(--g1), var(--g2) 60%, #1aa36c);
+        color: #fff; padding: 22px 28px; border-radius: 16px; margin-bottom: 22px;
+        display: flex; align-items: center; gap: 18px;
+        box-shadow: 0 8px 24px rgba(11,93,59,.25);
+        border-bottom: 4px solid var(--gold);
+    }
+    .school-banner .logo {
+        font-size: 2.4rem; background: rgba(255,255,255,.15);
+        width: 64px; height: 64px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .school-banner h2 { margin: 0; color: #fff; font-size: 1.45rem; font-weight: 700; line-height: 1.25; }
+    .school-banner p  { margin: 4px 0 0 0; opacity: .9; font-size: .9rem; }
+
+    /* ---------- hero ---------- */
+    .hero {
+        background: linear-gradient(135deg, var(--g3), rgba(19,138,90,.12));
+        border: 1px solid var(--card-border); border-radius: 18px;
+        padding: 34px 32px; margin-bottom: 22px;
+    }
+    .hero h1 { margin: 0 0 8px 0; font-size: 2rem; font-weight: 700; }
+    .hero p  { margin: 0; font-size: 1.02rem; opacity: .85; max-width: 760px; }
+    .hero .tag {
+        display: inline-block; background: var(--gold); color: #3a2a00;
+        padding: 4px 14px; border-radius: 999px; font-size: .78rem; font-weight: 600; margin-bottom: 12px;
+    }
+
+    /* ---------- cards ---------- */
+    .card {
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        border-radius: 14px; padding: 20px 20px; height: 100%;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.10); }
+    .card .icon { font-size: 1.9rem; }
+    .card h4 { margin: 8px 0 6px 0; font-size: 1.05rem; font-weight: 600; }
+    .card p  { margin: 0; font-size: .9rem; opacity: .8; }
+
+    .stat {
+        border-radius: 14px; padding: 18px 20px; color: #fff;
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+    .stat .num { font-size: 1.9rem; font-weight: 700; line-height: 1.1; }
+    .stat .lbl { font-size: .85rem; opacity: .92; margin-top: 2px; }
+    .stat.s1 { background: linear-gradient(135deg, #0b5d3b, #1aa36c); }
+    .stat.s2 { background: linear-gradient(135deg, #1b5fa8, #3b8fe0); }
+    .stat.s3 { background: linear-gradient(135deg, #c46a00, #f2a33a); }
+    .stat.s4 { background: linear-gradient(135deg, #6a3fb0, #9a6fe0); }
+    .stat.s5 { background: linear-gradient(135deg, #a8324a, #e05a77); }
+
+    .section-title {
+        font-size: 1.35rem; font-weight: 700; margin: 6px 0 14px 0;
+        padding-left: 12px; border-left: 5px solid var(--gold);
+    }
+    .page-sub { opacity: .75; margin: -6px 0 18px 0; }
+
+    .badge {
+        display: inline-block; padding: 4px 14px; border-radius: 999px;
+        font-size: .85rem; font-weight: 600; color: #fff;
+    }
+    .b-Pending { background: #c98a00; } .b-Under-Review { background: #1b5fa8; }
+    .b-Approved { background: #138a5a; } .b-Rejected { background: #c0392b; }
+    .b-Admitted { background: #6a3fb0; }
+
+    /* ---------- sidebar ---------- */
+    section[data-testid="stSidebar"] { border-right: 1px solid var(--card-border); }
+    .side-brand { text-align: center; padding: 6px 0 12px 0; }
+    .side-brand .logo { font-size: 2.6rem; }
+    .side-brand .name { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+    .user-chip {
+        background: var(--g3); color: #0b3d28; border-radius: 12px;
+        padding: 10px 14px; margin: 8px 0 14px 0; font-size: .88rem;
+    }
+    .user-chip b { display: block; font-size: .95rem; }
+    section[data-testid="stSidebar"] div[role="radiogroup"] { gap: 4px; }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label {
+        padding: 9px 12px; border-radius: 10px; width: 100%;
+        border: 1px solid transparent; transition: background .12s;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:hover { background: var(--card-bg); }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) {
+        background: linear-gradient(90deg, var(--g1), var(--g2)); color: #fff;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label:has(input:checked) * { color: #fff !important; }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label > div:first-child { display: none; }
+
+    /* ---------- inputs & buttons ---------- */
+    .stButton > button, .stFormSubmitButton > button, .stDownloadButton > button {
+        border-radius: 10px; font-weight: 600; padding: .55rem 1.3rem;
+        border: 1px solid var(--g2);
+    }
+    .stFormSubmitButton > button, .stButton > button[kind="primary"] {
+        background: linear-gradient(90deg, var(--g1), var(--g2)); color: #fff; border: none;
+    }
+    .stFormSubmitButton > button:hover { filter: brightness(1.1); color: #fff; }
+    div[data-testid="stForm"] {
+        border: 1px solid var(--card-border); border-radius: 16px; padding: 22px 22px 14px 22px;
+        background: var(--card-bg);
+    }
+    div[data-testid="stMetric"] {
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        padding: 14px 16px; border-radius: 12px;
+    }
+    div[data-testid="stDataFrame"] { border-radius: 12px; overflow: hidden; }
+    .login-wrap { text-align: center; margin-bottom: 6px; }
+    .login-wrap .big { font-size: 3rem; }
+
+    @media (max-width: 640px) {
+        .school-banner { padding: 16px; gap: 12px; }
+        .school-banner h2 { font-size: 1.05rem; }
+        .school-banner .logo { width: 48px; height: 48px; font-size: 1.7rem; }
+        .hero { padding: 22px 18px; } .hero h1 { font-size: 1.4rem; }
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
+def title(text, sub=None):
+    st.markdown(f'<div class="section-title">{text}</div>', unsafe_allow_html=True)
+    if sub:
+        st.markdown(f'<div class="page-sub">{sub}</div>', unsafe_allow_html=True)
+
+
+def stat_card(col, number, label, style="s1"):
+    col.markdown(
+        f'<div class="stat {style}"><div class="num">{number}</div><div class="lbl">{label}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def info_card(col, icon, heading, text):
+    col.markdown(
+        f'<div class="card"><div class="icon">{icon}</div><h4>{heading}</h4><p>{text}</p></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def badge(status):
+    return f'<span class="badge b-{status.replace(" ", "-")}">{status}</span>'
 
 
 # ----------------------------------------------------------------------------
@@ -256,43 +402,54 @@ def flash(msg):
 # PUBLIC PAGES
 # ----------------------------------------------------------------------------
 def page_home():
-    st.subheader("Welcome")
     ns = one("SELECT COUNT(*) AS n FROM students")["n"]
     nt = one("SELECT COUNT(*) AS n FROM teachers")["n"]
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Students", ns)
-    c2.metric("Teachers", nt)
-    c3.metric("Classes", f"{CLASSES[0]} to {CLASSES[-1]}")
 
     st.markdown(
         f"""
-        **{SCHOOL_NAME}** provides quality education from primary level up to
-        Higher Secondary (Intermediate). We are committed to discipline,
-        academic excellence and the bright future of the children of our area.
-
-        ### 📢 Admissions
-        Admissions are open. Use **Apply Online** from the menu to submit your
-        application, then use **Track Application** to see its status.
-
-        ### 📍 Contact
-        - **Address:** {SCHOOL_ADDRESS}
-        - **Phone:** {SCHOOL_PHONE}
-        - **Email:** {SCHOOL_EMAIL}
-        - **Office hours:** {OFFICE_HOURS}
-        """
+        <div class="hero">
+            <span class="tag">📢 Admissions Open {date.today().year}</span>
+            <h1>Shaping the future of Datta Khel through quality education</h1>
+            <p>{SCHOOL_NAME} offers education from Nursery up to Higher Secondary,
+            with discipline, dedicated teachers and a focus on every child's success.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
+
+    c1, c2, c3 = st.columns(3)
+    stat_card(c1, ns, "Students enrolled", "s1")
+    stat_card(c2, nt, "Teachers", "s2")
+    stat_card(c3, "Nursery - 12", "Classes offered", "s3")
+
+    st.write("")
+    title("What you can do here")
+    a, b, c, d = st.columns(4)
+    info_card(a, "📝", "Apply Online", "Submit an admission application from home in a few minutes.")
+    info_card(b, "🔎", "Track Application", "Check your application status with your tracking ID.")
+    info_card(c, "📅", "Attendance", "Teachers mark attendance daily; students see their record.")
+    info_card(d, "🤖", "AI Assistant", "Ask questions in English, Urdu or Pashto, any time.")
+
+    st.write("")
+    title("Contact us")
+    a, b, c, d = st.columns(4)
+    info_card(a, "📍", "Address", SCHOOL_ADDRESS)
+    info_card(b, "📞", "Phone", SCHOOL_PHONE)
+    info_card(c, "✉️", "Email", SCHOOL_EMAIL)
+    info_card(d, "🕗", "Office hours", OFFICE_HOURS)
 
 
 def page_apply():
-    st.header("📝 Online Admission Application")
+    title("📝 Online Admission Application", "Fill in the form below. Fields marked * are required.")
     user = st.session_state.get("user")
     if not user:
         st.info("Tip: create an account (Register) before applying so you can see all your applications in one place. You can still apply without an account.")
 
     with st.form("apply_form"):
+        st.markdown("**👦 Student information**")
         c1, c2 = st.columns(2)
-        name = c1.text_input("Student full name *")
-        father = c2.text_input("Father / guardian name *")
+        name = c1.text_input("Student full name *", placeholder="e.g. Ahmad Khan")
+        father = c2.text_input("Father / guardian name *", placeholder="e.g. Gul Khan")
         dob = c1.date_input(
             "Date of birth",
             value=date(2012, 1, 1),
@@ -302,10 +459,12 @@ def page_apply():
         gender = c2.selectbox("Gender", ["Male", "Female", "Other"])
         cls = c1.selectbox("Applying for class *", CLASSES)
         prev = c2.text_input("Previous school (if any)")
-        phone = c1.text_input("Contact phone *")
-        id_no = c2.text_input("B-Form / CNIC number (optional)")
+        st.markdown("**📞 Contact details**")
+        c3, c4 = st.columns(2)
+        phone = c3.text_input("Contact phone *", placeholder="03XX-XXXXXXX")
+        id_no = c4.text_input("B-Form / CNIC number (optional)")
         address = st.text_area("Home address *")
-        submit = st.form_submit_button("Submit application")
+        submit = st.form_submit_button("✅ Submit application")
 
     if submit:
         if not need(name, father, phone, address):
@@ -322,13 +481,14 @@ def page_apply():
                 user["id"] if user else None,
             ),
         )
+        st.balloons()
         st.success("✅ Application submitted successfully!")
         st.markdown(f"### Your tracking ID: `{tracking}`")
         st.warning("Save this ID. You need it together with your phone number to check your status.")
 
 
 def page_track():
-    st.header("🔎 Track Your Application")
+    title("🔎 Track Your Application", "Enter your tracking ID and the phone number used in the application.")
     with st.form("track"):
         tid = st.text_input("Tracking ID (e.g. APP-1A2B3C4D)")
         phone = st.text_input("Phone number used in the application")
@@ -341,32 +501,45 @@ def page_track():
         if not app:
             st.error("No application found. Check the tracking ID and phone number.")
             return
-        st.success(f"Status: **{app['status']}**")
-        st.write(f"**Student:** {app['student_name']}  |  **Class:** {app['applying_class']}")
-        st.write(f"**Submitted:** {app['created_at']}")
+        st.markdown(
+            f"""<div class="card">
+            <div style="margin-bottom:10px">{badge(app['status'])}</div>
+            <h4>{app['student_name']}</h4>
+            <p><b>Class:</b> {app['applying_class']} &nbsp;|&nbsp; <b>Submitted:</b> {app['created_at']}</p>
+            </div>""",
+            unsafe_allow_html=True,
+        )
         if app["remarks"]:
             st.info(f"Remarks from school: {app['remarks']}")
 
 
 def page_login():
-    st.header("🔐 Login")
-    with st.form("login"):
-        u = st.text_input("Username")
-        p = st.text_input("Password", type="password")
-        ok = st.form_submit_button("Login")
-    if ok:
-        user = authenticate(u, p)
-        if user:
-            st.session_state["user"] = {
-                k: user[k] for k in ("id", "username", "role", "full_name", "ref_id")
-            }
-            st.rerun()
-        else:
-            st.error("Wrong username or password.")
+    _, mid, _ = st.columns([1, 1.4, 1])
+    with mid:
+        st.markdown(
+            '<div class="login-wrap"><div class="big">🔐</div>'
+            '<div class="section-title" style="border:none;padding:0">Welcome back</div>'
+            '<div class="page-sub">Login to your school account</div></div>',
+            unsafe_allow_html=True,
+        )
+        with st.form("login"):
+            u = st.text_input("Username", placeholder="Enter username")
+            p = st.text_input("Password", type="password", placeholder="Enter password")
+            ok = st.form_submit_button("Login")
+        st.caption("Students and teachers: use the login details given by the school office. Parents: use Register to create an account.")
+        if ok:
+            user = authenticate(u, p)
+            if user:
+                st.session_state["user"] = {
+                    k: user[k] for k in ("id", "username", "role", "full_name", "ref_id")
+                }
+                st.rerun()
+            else:
+                st.error("Wrong username or password.")
 
 
 def page_register():
-    st.header("🧾 Create Account")
+    title("🧾 Create Account")
     st.caption(
         "Register to submit and track admission applications. "
         "Student and teacher accounts are created by the school office."
@@ -394,7 +567,7 @@ def page_register():
 
 
 def page_assistant():
-    st.header("🤖 School AI Assistant")
+    title("🤖 School AI Assistant")
     st.caption("Ask about admissions, classes and general school information. Urdu, Pashto and English are supported.")
     key = secret("GROQ_API_KEY")
     if not key:
@@ -448,7 +621,7 @@ Help with general study tips and school-related questions only."""
 # COMMON LOGGED-IN PAGES
 # ----------------------------------------------------------------------------
 def page_password():
-    st.header("🔑 Change Password")
+    title("🔑 Change Password")
     user = st.session_state["user"]
     with st.form("pw"):
         old = st.text_input("Current password", type="password")
@@ -470,7 +643,7 @@ def page_password():
 
 def my_attendance(kind):
     user = st.session_state["user"]
-    st.header("📅 My Attendance")
+    title("📅 My Attendance")
     if not user.get("ref_id"):
         st.info("No attendance record is linked to this account.")
         return
@@ -501,7 +674,7 @@ def my_attendance(kind):
 # APPLICANT
 # ----------------------------------------------------------------------------
 def my_applications():
-    st.header("📄 My Applications")
+    title("📄 My Applications")
     user = st.session_state["user"]
     df = frame(
         """SELECT tracking_id AS "Tracking ID", student_name AS Student,
@@ -520,7 +693,7 @@ def my_applications():
 # ADMIN PAGES
 # ----------------------------------------------------------------------------
 def admin_dashboard():
-    st.header("📊 Admin Dashboard")
+    title("📊 Admin Dashboard", f"Overview for {date.today().strftime('%A, %d %B %Y')}")
     today = date.today().isoformat()
     ns = one("SELECT COUNT(*) AS n FROM students")["n"]
     nt = one("SELECT COUNT(*) AS n FROM teachers")["n"]
@@ -539,18 +712,31 @@ def admin_dashboard():
     tm = one("SELECT COUNT(*) AS n FROM teacher_attendance WHERE att_date=?", (today,))["n"]
 
     c = st.columns(5)
-    c[0].metric("Students", ns)
-    c[1].metric("Teachers", nt)
-    c[2].metric("Open applications", npend)
-    c[3].metric("Students present today", f"{sp}/{sm}")
-    c[4].metric("Teachers present today", f"{tp}/{tm}")
+    stat_card(c[0], ns, "Students", "s1")
+    stat_card(c[1], nt, "Teachers", "s2")
+    stat_card(c[2], npend, "Open applications", "s3")
+    stat_card(c[3], f"{sp}/{sm}", "Students present today", "s4")
+    stat_card(c[4], f"{tp}/{tm}", "Teachers present today", "s5")
+    st.write("")
 
-    df = frame("SELECT status, COUNT(*) AS count FROM applications GROUP BY status")
-    if not df.empty:
-        st.subheader("Applications by status")
-        st.bar_chart(df.set_index("status"))
+    left, right = st.columns(2)
+    with left:
+        title("Applications by status")
+        df = frame("SELECT status, COUNT(*) AS count FROM applications GROUP BY status")
+        if df.empty:
+            st.info("No applications yet.")
+        else:
+            st.bar_chart(df.set_index("status"))
+    with right:
+        title("Students per class")
+        dfc = frame("SELECT class_name AS class, COUNT(*) AS students FROM students GROUP BY class_name")
+        if dfc.empty:
+            st.info("No students yet.")
+        else:
+            dfc["class"] = pd.Categorical(dfc["class"], categories=CLASSES, ordered=True)
+            st.bar_chart(dfc.sort_values("class").set_index("class"))
 
-    st.subheader("💾 Backup")
+    title("💾 Backup")
     st.caption("Download a backup regularly. On free hosting, the local database can be reset when the app restarts.")
     if os.path.exists(DB_PATH):
         with open(DB_PATH, "rb") as f:
@@ -573,7 +759,7 @@ def admit_application(app):
 
 
 def admin_applications():
-    st.header("📥 Admission Applications")
+    title("📥 Admission Applications")
     df = frame("SELECT * FROM applications ORDER BY id DESC")
     if df.empty:
         st.info("No applications yet.")
@@ -617,7 +803,7 @@ def admin_applications():
 
 
 def admin_add_student():
-    st.header("➕ Add Student")
+    title("➕ Add Student")
     with st.form("add_student", clear_on_submit=True):
         c1, c2 = st.columns(2)
         name = c1.text_input("Student name *")
@@ -657,7 +843,7 @@ def admin_add_student():
 
 
 def admin_add_teacher():
-    st.header("➕ Add Teacher")
+    title("➕ Add Teacher")
     with st.form("add_teacher", clear_on_submit=True):
         c1, c2 = st.columns(2)
         name = c1.text_input("Teacher name *")
@@ -693,7 +879,7 @@ def admin_add_teacher():
 
 def people_page(kind):
     table = "students" if kind == "student" else "teachers"
-    st.header("🎓 Students" if kind == "student" else "👩‍🏫 Teachers")
+    title("🎓 Students" if kind == "student" else "👩‍🏫 Teachers")
     df = frame(f"SELECT * FROM {table} ORDER BY id DESC")
     if df.empty:
         st.info("No records yet.")
@@ -743,7 +929,10 @@ def people_page(kind):
 def attendance_page(kind):
     is_student = kind == "student"
     user = st.session_state["user"]
-    st.header("🧑‍🎓 Student Attendance" if is_student else "👩‍🏫 Teacher Attendance")
+    title(
+        "🧑‍🎓 Student Attendance" if is_student else "👩‍🏫 Teacher Attendance",
+        "Pick the date, set each status, then press Save.",
+    )
 
     c1, c2 = st.columns(2)
     d = c2.date_input("Date", value=date.today(), max_value=date.today(), key=f"date_{kind}")
@@ -765,14 +954,29 @@ def attendance_page(kind):
 
     existing = frame(f"SELECT {fk} AS pid, status FROM {table} WHERE att_date=?", (d.isoformat(),))
     emap = dict(zip(existing["pid"], existing["status"]))
-    people["Status"] = people["ID"].map(lambda i: emap.get(i, "Present"))
+
+    fkey = f"force_{kind}_{sig}"
+    vkey = f"ver_{kind}_{sig}"
+    forced = st.session_state.get(fkey)
+    ver = st.session_state.get(vkey, 0)
+    people["Status"] = people["ID"].map(lambda i: forced or emap.get(i, "Present"))
 
     if emap:
         st.caption("Attendance is already saved for this date. Saving will update it.")
 
+    b1, b2, _ = st.columns([1, 1, 4])
+    if b1.button("✅ All present", key=f"allp_{kind}"):
+        st.session_state[fkey] = "Present"
+        st.session_state[vkey] = ver + 1
+        st.rerun()
+    if b2.button("❌ All absent", key=f"alla_{kind}"):
+        st.session_state[fkey] = "Absent"
+        st.session_state[vkey] = ver + 1
+        st.rerun()
+
     edited = st.data_editor(
         people,
-        key=f"edit_{kind}_{sig}",
+        key=f"edit_{kind}_{sig}_{ver}",
         hide_index=True,
         disabled=[c for c in people.columns if c != "Status"],
         column_config={
@@ -780,7 +984,13 @@ def attendance_page(kind):
         },
     )
 
-    if st.button("💾 Save attendance", key=f"save_{kind}"):
+    counts = edited["Status"].value_counts()
+    m = st.columns(4)
+    for col, s in zip(m, ATT_STATUS):
+        col.metric(s, int(counts.get(s, 0)))
+
+    if st.button("💾 Save attendance", key=f"save_{kind}", type="primary"):
+        st.session_state.pop(fkey, None)
         rows = [
             (int(r["ID"]), d.isoformat(), r["Status"], user["username"])
             for _, r in edited.iterrows()
@@ -795,7 +1005,7 @@ def attendance_page(kind):
 
 
 def reports_page():
-    st.header("📈 Attendance Reports")
+    title("📈 Attendance Reports")
     kind = st.radio("Report for", ["Students", "Teachers"], horizontal=True)
     c1, c2, c3 = st.columns(3)
     start = c1.date_input("From", value=date.today() - timedelta(days=30))
@@ -847,7 +1057,7 @@ def reports_page():
 # TEACHER
 # ----------------------------------------------------------------------------
 def teacher_students():
-    st.header("🧑‍🎓 My Students")
+    title("🧑‍🎓 My Students")
     cls = st.selectbox("Class", CLASSES)
     df = frame(
         'SELECT roll_no AS "Roll No", name AS Name, father_name AS "Father Name", phone AS Phone FROM students WHERE class_name=? ORDER BY roll_no',
@@ -917,16 +1127,22 @@ def main():
     user = st.session_state.get("user")
 
     st.markdown(
-        f"""<div class="school-banner"><h2>🏫 {SCHOOL_NAME}</h2>
-        <p>{SCHOOL_ADDRESS}</p></div>""",
+        f"""<div class="school-banner"><div class="logo">🏫</div>
+        <div><h2>{SCHOOL_NAME}</h2><p>📍 {SCHOOL_ADDRESS}</p></div></div>""",
         unsafe_allow_html=True,
     )
 
     pages = menu_for(user)
     with st.sidebar:
-        st.title("🏫 " + SCHOOL_SHORT)
+        st.markdown(
+            f'<div class="side-brand"><div class="logo">🏫</div><div class="name">{SCHOOL_SHORT}</div></div>',
+            unsafe_allow_html=True,
+        )
         if user:
-            st.caption(f"👤 {user['full_name']} ({user['role']})")
+            st.markdown(
+                f'<div class="user-chip"><b>👤 {user["full_name"]}</b>{user["role"].title()}</div>',
+                unsafe_allow_html=True,
+            )
         choice = st.radio("Menu", list(pages.keys()), label_visibility="collapsed")
         if user and st.button("🚪 Logout"):
             st.session_state.clear()
