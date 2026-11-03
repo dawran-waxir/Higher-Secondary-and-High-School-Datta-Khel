@@ -10,6 +10,7 @@ Features:
 - Students: view own attendance
 """
 
+import base64
 import os
 import secrets
 import hashlib
@@ -38,7 +39,39 @@ CLASSES = ["Nursery", "Prep"] + [str(i) for i in range(1, 11)] + [
 ATT_STATUS = ["Present", "Absent", "Late", "Leave"]
 APP_STATUS = ["Pending", "Under Review", "Approved", "Rejected", "Admitted"]
 
-st.set_page_config(page_title=SCHOOL_NAME, page_icon="🏫", layout="wide")
+LOGO_FILES = ["logo.png", "logo.jpg", "logo.jpeg", "logo.webp"]  # put your logo next to app.py
+
+
+def find_logo():
+    for p in LOGO_FILES:
+        if os.path.exists(p):
+            return p
+    return None
+
+
+st.set_page_config(
+    page_title=SCHOOL_NAME, page_icon=find_logo() or "🏫", layout="wide"
+)
+
+
+@st.cache_data
+def logo_data_uri():
+    p = find_logo()
+    if not p:
+        return None
+    ext = p.rsplit(".", 1)[1].lower().replace("jpg", "jpeg")
+    with open(p, "rb") as f:
+        return f"data:image/{ext};base64," + base64.b64encode(f.read()).decode()
+
+
+def logo_html(size=60):
+    src = logo_data_uri()
+    if src:
+        return (
+            f'<img src="{src}" style="height:{size}px;width:auto;display:block;margin:0 auto;'
+            f'filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))">'
+        )
+    return "🏫"
 
 st.markdown(
     """
@@ -65,8 +98,7 @@ st.markdown(
         border-bottom: 4px solid var(--gold);
     }
     .school-banner .logo {
-        font-size: 2.4rem; background: rgba(255,255,255,.15);
-        width: 64px; height: 64px; border-radius: 50%;
+        font-size: 2.4rem; min-width: 64px; min-height: 64px;
         display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .school-banner h2 { margin: 0; color: #fff; font-size: 1.45rem; font-weight: 700; line-height: 1.25; }
@@ -168,7 +200,8 @@ st.markdown(
     @media (max-width: 640px) {
         .school-banner { padding: 16px; gap: 12px; }
         .school-banner h2 { font-size: 1.05rem; }
-        .school-banner .logo { width: 48px; height: 48px; font-size: 1.7rem; }
+        .school-banner .logo { min-width: 48px; min-height: 48px; font-size: 1.7rem; }
+        .school-banner .logo img { height: 64px !important; }
         .hero { padding: 22px 18px; } .hero h1 { font-size: 1.4rem; }
     }
     </style>
@@ -517,7 +550,7 @@ def page_login():
     _, mid, _ = st.columns([1, 1.4, 1])
     with mid:
         st.markdown(
-            '<div class="login-wrap"><div class="big">🔐</div>'
+            f'<div class="login-wrap"><div class="big">{logo_html(130) if logo_data_uri() else "🔐"}</div>'
             '<div class="section-title" style="border:none;padding:0">Welcome back</div>'
             '<div class="page-sub">Login to your school account</div></div>',
             unsafe_allow_html=True,
@@ -1127,7 +1160,7 @@ def main():
     user = st.session_state.get("user")
 
     st.markdown(
-        f"""<div class="school-banner"><div class="logo">🏫</div>
+        f"""<div class="school-banner"><div class="logo">{logo_html(96)}</div>
         <div><h2>{SCHOOL_NAME}</h2><p>📍 {SCHOOL_ADDRESS}</p></div></div>""",
         unsafe_allow_html=True,
     )
@@ -1135,7 +1168,7 @@ def main():
     pages = menu_for(user)
     with st.sidebar:
         st.markdown(
-            f'<div class="side-brand"><div class="logo">🏫</div><div class="name">{SCHOOL_SHORT}</div></div>',
+            f'<div class="side-brand"><div class="logo">{logo_html(110)}</div><div class="name">{SCHOOL_SHORT}</div></div>',
             unsafe_allow_html=True,
         )
         if user:
